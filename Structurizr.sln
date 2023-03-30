@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4ED0E8DB-8A5B-4DF0-9CB1-995D97A04B88}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,13 +21,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4ED0E8DB-8
 		docs\filtered-views.md = docs\filtered-views.md
 		docs\getting-started.md = docs\getting-started.md
 		docs\health-checks.md = docs\health-checks.md
+		docs\implied-relationships.md = docs\implied-relationships.md
 		docs\nuget.md = docs\nuget.md
 		README.md = README.md
 		docs\styling-elements.md = docs\styling-elements.md
 		docs\styling-relationships.md = docs\styling-relationships.md
 		docs\system-context-diagram.md = docs\system-context-diagram.md
 		docs\system-landscape-diagram.md = docs\system-landscape-diagram.md
-		docs\implied-relationships.md = docs\implied-relationships.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.Core", "Structurizr.Core\Structurizr.Core.csproj", "{2F8E45CF-19B0-4B49-B7C7-5A3F25A993BD}"
@@ -75,9 +75,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{4FBA61
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{043B24B2-2120-48D9-91B1-8BB426C1C369}"
-ProjectSection(SolutionItems) = preProject
-	appveyor.yml = appveyor.yml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.DslReader", "Structurizr.DslReader\Structurizr.DslReader.csproj", "{05571A66-3977-4C38-9A6C-A5A195D26EEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,6 +151,18 @@ Global
 		{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}.Release|x64.Build.0 = Release|Any CPU
 		{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}.Release|x86.ActiveCfg = Release|Any CPU
 		{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}.Release|x86.Build.0 = Release|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Debug|x64.Build.0 = Debug|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Debug|x86.Build.0 = Debug|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Release|x64.ActiveCfg = Release|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Release|x64.Build.0 = Release|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Release|x86.ActiveCfg = Release|Any CPU
+		{05571A66-3977-4C38-9A6C-A5A195D26EEA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
