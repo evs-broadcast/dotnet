@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.IO;
 
 namespace Structurizr
 {
@@ -140,6 +141,36 @@ namespace Structurizr
         }
 
         /// <summary>
+        /// Creates a software system (location is unspecified) and adds it to the model
+        /// (unless one exists with the same name already).
+        /// </summary>
+        /// <param name="location">The location of the software system (e.g. internal, external, etc)</param>
+        /// <param name="name">The name of the software system</param>
+        /// <param name="description">A short description of the software syste.</param>
+        /// <returns>the SoftwareSystem instance created and added to the model (or null)</returns>
+        public SoftwareSystem AddSoftwareSystem(string id, Location location, string name, string description)
+        {
+          if (GetSoftwareSystemWithName(name) == null)
+          {
+            SoftwareSystem softwareSystem = new SoftwareSystem();
+            softwareSystem.Location = location;
+            softwareSystem.Name = name;
+            softwareSystem.Description = description;
+
+            _softwareSystems.Add(softwareSystem);
+
+            softwareSystem.Id = id;
+            AddElementToInternalStructures(softwareSystem);
+
+            return softwareSystem;
+          }
+          else
+          {
+            return null;
+          }
+        }
+
+        /// <summary>
         /// Creates a person (location is unspecified) and adds it to the model
         /// (unless one exists with the same name already.
         /// </summary>
@@ -212,8 +243,30 @@ namespace Structurizr
                 return null;
             }
         }
-        
-        internal SoftwareSystemInstance AddSoftwareSystemInstance(DeploymentNode deploymentNode, SoftwareSystem softwareSystem, string deploymentGroup)
+      internal Container AddContainer(SoftwareSystem parent, string id, string name, string description, string technology)
+      {
+        if (parent.GetContainerWithName(name) == null)
+        {
+          Container container = new Container();
+          container.Name = name;
+          container.Description = description;
+          container.Technology = technology;
+
+          container.Parent = parent;
+          parent.Add(container);
+
+          container.Id = id;
+          AddElementToInternalStructures(container);
+
+          return container;
+        }
+        else
+        {
+          return null;
+        }
+      }
+
+      internal SoftwareSystemInstance AddSoftwareSystemInstance(DeploymentNode deploymentNode, SoftwareSystem softwareSystem, string deploymentGroup)
         {
             if (softwareSystem == null) {
                 throw new ArgumentException("A software system must be specified.");
@@ -310,7 +363,34 @@ namespace Structurizr
             throw new ArgumentException("A container named '" + name + "' already exists for this software system.");
         }
 
-        public DeploymentNode AddDeploymentNode(string name, string description, string technology) {
+    internal Component AddComponent(Container parent,string id, string name, string type, string description, string technology)
+    {
+      if (parent.GetComponentWithName(name) == null)
+      {
+        Component component = new Component();
+        component.Name = name;
+        component.Description = description;
+        component.Technology = technology;
+
+        if (type != null)
+        {
+          component.Type = type;
+
+        }
+
+        component.Parent = parent;
+        parent.Add(component);
+
+        component.Id = id;
+        AddElementToInternalStructures(component);
+
+        return component;
+      }
+
+      throw new ArgumentException("A container named '" + name + "' already exists for this software system.");
+    }
+
+    public DeploymentNode AddDeploymentNode(string name, string description, string technology) {
             return AddDeploymentNode(DeploymentElement.DefaultDeploymentEnvironment, name, description, technology);
         }
 

@@ -1,17 +1,16 @@
 ﻿namespace Structurizr.DslReader.Parser
 {
-  public sealed class ModelParser : IParser
+  public sealed class ViewsParser : IParser
   {
-    private const string MODEL = "model";
-
+    private const string VIEWS = "views";
     public bool Accept(string line, ParsingContext context)
     {
-      return line.StartsWith($"{MODEL} ", StringComparison.InvariantCultureIgnoreCase);
+      return line.StartsWith($"{VIEWS} ", StringComparison.InvariantCultureIgnoreCase);
     }
 
     public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
     {
-      contextualWorkspace.Context.Set(contextualWorkspace.Workspace.Model);
+      contextualWorkspace.Context.Set(contextualWorkspace.Workspace.Views);
       return ValueTask.FromResult(contextualWorkspace);
     }
   }

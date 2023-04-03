@@ -1,20 +1,17 @@
-﻿using Structurizr;
-
-namespace Structurizr.DslReader.Parser
+﻿namespace Structurizr.DslReader.Parser
 {
   public sealed class WorkspaceParser : IParser
   {
     private const string WORKSPACE = "workspace";
 
-    public bool Accept(string line)
+    public bool Accept(string line, ParsingContext context)
     {
       return line.StartsWith(WORKSPACE, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public async ValueTask<Workspace?> ParseAsync(string line, Workspace? workspace, DirectoryInfo directoryInfo)
+    public async ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
     {
-      if (workspace != null)
-        throw new Exception("Unable to parse multiple workspace");
+      ArgumentNullException.ThrowIfNull(contextualWorkspace, nameof(contextualWorkspace));
 
       var tokens = line.Split(" ").ToList();
 
@@ -31,10 +28,10 @@ namespace Structurizr.DslReader.Parser
       {
         if (tokens.Count < 3)
           tokens.Add(string.Empty);
-        workspace = new Workspace(tokens[1], tokens[2]);
+        contextualWorkspace = new ContextualWorkspace(new Workspace(tokens[1], tokens[2]));
       }
 
-      return workspace;
+      return contextualWorkspace;
     }
   }
 }

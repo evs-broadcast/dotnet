@@ -2,9 +2,9 @@
 
 namespace Structurizr.DslReader.Parser
 {
-  public interface IParser
+    public interface IParser
   {
-    bool Accept(string line);
-    ValueTask<Workspace?> ParseAsync(string line, Workspace? workspace, DirectoryInfo directoryInfo);
+    bool Accept(string line, ParsingContext context);
+    ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo);
   }
 }

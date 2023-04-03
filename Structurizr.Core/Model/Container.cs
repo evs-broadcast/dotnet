@@ -104,6 +104,11 @@ namespace Structurizr
             return Model.AddComponent(this, name, type, description, technology);
         }
 
+    public Component AddComponent(string id, string name, string type, string description, string technology)
+    {
+      return Model.AddComponent(this, id, name, type, description, technology);
+    }
+
         internal void Add(Component component)
         {
             if (GetComponentWithName(component.Name) == null)
