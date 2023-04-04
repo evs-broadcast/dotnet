@@ -21,7 +21,7 @@
         var fileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, tokens[2]));
         if (fileInfo.Exists)
         {
-          return await new DslFileReader().ParseAsync(fileInfo);
+          contextualWorkspace = new ContextualWorkspace(await new DslFileReader().ParseAsync(fileInfo));
         }
       }
       else

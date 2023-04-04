@@ -4,36 +4,40 @@ namespace Structurizr.DslReader
 {
     public sealed class DslFileReader
   {
-    public async Task<ContextualWorkspace> ParseAsync(FileInfo fileInfo)
+    public async Task<Workspace> ParseAsync(FileInfo fileInfo)
     {
       ArgumentNullException.ThrowIfNull(fileInfo, nameof(fileInfo));
       ArgumentNullException.ThrowIfNull(fileInfo.Directory, nameof(fileInfo.Directory));
 
       var streamReader = File.OpenText(fileInfo.FullName);
-      var parsers = new IParser[] { new WorkspaceParser(), new EmptyLineParser(), new ModelParser(), new SoftwareSystemParser() };
-      ContextualWorkspace contextualWorkspace = new ContextualWorkspace(null);
+      var parsers = ParserFactory.GetAllParsers();
+      ContextualWorkspace? contextualWorkspace = new ContextualWorkspace(new Workspace("name", "description"));
 
       if (streamReader is not null)
       {
-        var line = await streamReader.ReadLineAsync();
+        var line = Sanitize(await streamReader.ReadLineAsync());
         while (line != null)
         {
-          try
+          if (!string.IsNullOrEmpty(line))
           {
-            var parser = parsers.FirstOrDefault(p => p.Accept(line,contextualWorkspace.Context));
-            if (parser == null)
-              throw new Exception("Unable to find Parser");
-            contextualWorkspace = await parser.ParseAsync(Sanitize(line), contextualWorkspace, fileInfo.Directory);
-            line = await streamReader.ReadLineAsync();
+            try
+            {
+              Console.WriteLine(line);
+              var parser = parsers.FirstOrDefault(p => p.Accept(line, contextualWorkspace.Context));
+              if (parser == null)
+                throw new Exception($"Unable to find Parser for [{line}]");
+              contextualWorkspace = await parser.ParseAsync(line, contextualWorkspace, fileInfo.Directory);
+            }
+            catch (Exception ex)
+            {
+              Console.WriteLine($"[ERROR]unable to parse [{line}]");
+              Console.WriteLine($"[ERROR]{ex.Message}");
+            }
           }
-          catch (Exception ex)
-          {
-            Console.WriteLine($"unable to parse {line}");
-            Console.WriteLine(ex.Message);
-          }
+          line = Sanitize(await streamReader.ReadLineAsync());
         }
 
-        return contextualWorkspace;
+        return contextualWorkspace.Workspace;
       }
       else
       {
@@ -41,8 +45,11 @@ namespace Structurizr.DslReader
       }
     }
 
-    private static string Sanitize(string line)
+    private static string? Sanitize(string? line)
     {
+      if (line == null)
+        return null;
+
       line = line.Trim();
       int size;
       do

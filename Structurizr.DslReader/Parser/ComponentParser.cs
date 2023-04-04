@@ -16,12 +16,14 @@
 
       if (tokens.GetValueAtOrDefault(1) == "=") //{id} = component  {name} {description} {technology} {tags}
       {
-        var container = contextualWorkspace.Context.Container.AddComponent(tokens.GetValueAtOrDefault(0), tokens.GetValueAtOrDefault(3),type: null, tokens.GetValueAtOrDefault(4), tokens.GetValueAtOrDefault(5));
+        var component = contextualWorkspace.Context.Container.AddComponent(tokens.GetValueAtOrDefault(0), tokens.GetValueAtOrDefault(3),type: null, tokens.GetValueAtOrDefault(4), tokens.GetValueAtOrDefault(5));
         for (var i = 6; tokens.GetValueAtOrDefault(i) != null; i++)
         {
-          container.AddTags(tokens.GetValueAtOrDefault(i).Split(','));
-          contextualWorkspace.Context.Set(container);
+          component.AddTags(tokens.GetValueAtOrDefault(i)?.Split(','));
         }
+
+        if (tokens.Last() == "{")
+          contextualWorkspace.Context.Set(component);
       }
       else
       {

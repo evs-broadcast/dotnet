@@ -14,6 +14,8 @@
       if (context.Model != null) context.Set(contextualWorkspace.Workspace);
       if (context.Views != null) context.Set(contextualWorkspace.Workspace);
       if (context.SoftwareSystem != null) context.Set(context.SoftwareSystem.Model);
+      if (context.Container != null) context.Set(context.Container.SoftwareSystem);
+      if (context.Component != null) context.Set(context.Component.Container);
 
       return ValueTask.FromResult(contextualWorkspace);
     }

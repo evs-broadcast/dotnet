@@ -1,4 +1,6 @@
-﻿namespace Structurizr.DslReader.Parser
+﻿using System.ComponentModel;
+
+namespace Structurizr.DslReader.Parser
 {
   public sealed class ContainerParser : IParser
   {
@@ -19,9 +21,11 @@
         var container = contextualWorkspace.Context.SoftwareSystem.AddContainer(tokens.GetValueAtOrDefault(0), tokens.GetValueAtOrDefault(3), tokens.GetValueAtOrDefault(4), tokens.GetValueAtOrDefault(5));
         for (var i = 6; tokens.GetValueAtOrDefault(i) != null; i++)
         {
-          container.AddTags(tokens.GetValueAtOrDefault(i).Split(','));
-          contextualWorkspace.Context.Set(container);
+          container.AddTags(tokens.GetValueAtOrDefault(i)?.Split(','));
         }
+
+        if (tokens.Last() == "{")
+          contextualWorkspace.Context.Set(container);
       }
       else
       {

@@ -8,6 +8,7 @@
     public SoftwareSystem? SoftwareSystem { get; private set; }
     public Container? Container { get; private set; }
     public Component? Component { get; private set; }
+    public Element? Element { get; private set; }
 
     public void Set(Workspace workspace)
     {
@@ -25,6 +26,7 @@
     {
       ResetAll();
       SoftwareSystem = softwareSystem;
+      Element = softwareSystem;
     }
 
     public void Set(ViewSet views)
@@ -37,12 +39,14 @@
     {
       ResetAll();
       Container = container;
+      Element = container;
     }
 
     public void Set(Component component)
     {
       ResetAll();
       Component = component;
+      Element = component;
     }
 
     private void ResetAll()
@@ -53,6 +57,7 @@
       SoftwareSystem = null;
       Container = null;
       Component = null;
+      Element = null;
     }
   }
 }

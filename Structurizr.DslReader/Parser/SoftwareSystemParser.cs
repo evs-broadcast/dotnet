@@ -11,14 +11,12 @@
 
     public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
     {
-      ArgumentNullException.ThrowIfNull(contextualWorkspace, nameof(contextualWorkspace));
-
       var tokens = line.Split(" ");
 
       SoftwareSystem softwareSystem;
-      if (string.Compare(tokens.GetValueAtOrDefault(0), SOFTWARE_SYSTEM, true) != 0) // softwareSystem {name} {description}
+      if (string.Compare(tokens.GetValueAtOrDefault(0), SOFTWARE_SYSTEM, true) == 0) // softwareSystem = {name} {description}
       {
-        softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(1), tokens.GetValueAtOrDefault(2));
+        softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(2), tokens.GetValueAtOrDefault(3));
       }
       else
       {

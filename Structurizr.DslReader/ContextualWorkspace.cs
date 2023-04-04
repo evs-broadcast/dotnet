@@ -9,7 +9,7 @@
       Context.Set(workspace);
     }
 
-    public Workspace Workspace { get; }
-    public ParsingContext Context { get; set; }
+    public Workspace Workspace { get; set; }
+    public ParsingContext Context { get; }
   }
 }
