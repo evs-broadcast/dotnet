@@ -4,14 +4,14 @@ namespace Structurizr.DslReader
 {
     public sealed class DslFileReader
   {
-    public async Task<Workspace> ParseAsync(FileInfo fileInfo)
+    public static async Task<Workspace> ParseAsync(FileInfo fileInfo, Workspace? workspace)
     {
       ArgumentNullException.ThrowIfNull(fileInfo, nameof(fileInfo));
       ArgumentNullException.ThrowIfNull(fileInfo.Directory, nameof(fileInfo.Directory));
 
       var streamReader = File.OpenText(fileInfo.FullName);
       var parsers = ParserFactory.GetAllParsers();
-      ContextualWorkspace? contextualWorkspace = new ContextualWorkspace(new Workspace("name", "description"));
+      ContextualWorkspace? contextualWorkspace = new(workspace);
 
       if (streamReader is not null)
       {
@@ -23,9 +23,7 @@ namespace Structurizr.DslReader
             try
             {
               Console.WriteLine(line);
-              var parser = parsers.FirstOrDefault(p => p.Accept(line, contextualWorkspace.Context));
-              if (parser == null)
-                throw new Exception($"Unable to find Parser for [{line}]");
+              var parser = parsers.FirstOrDefault(p => p.Accept(line, contextualWorkspace.Context)) ?? throw new Exception($"Unable to find Parser for [{line}]");
               contextualWorkspace = await parser.ParseAsync(line, contextualWorkspace, fileInfo.Directory);
             }
             catch (Exception ex)
