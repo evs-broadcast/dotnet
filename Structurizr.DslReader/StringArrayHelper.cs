@@ -4,7 +4,7 @@
   {
     public static string? GetValueAtOrDefault(this string[] array, int ndx)
     {
-      return array.Length > ndx ? array[ndx] : null;
+      return array.Length > ndx ? array[ndx].Trim('"') : null;
     }
 
     public static string[] GetTagsAt(this string[] array, int startNdx)
@@ -14,7 +14,7 @@
 
       for(var i=startNdx; tag != null; i++)
       {
-        tags.AddRange(tag.Split(','));
+        tags.AddRange(tag.Split(',').Select(t=>t.Trim('"')));
         tag = array.GetValueAtOrDefault(i);
       }
 

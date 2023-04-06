@@ -2,7 +2,7 @@
 
 namespace Structurizr.DslReader
 {
-    public sealed class DslFileReader
+  public sealed class DslFileReader
   {
     public static async Task<Workspace> ParseAsync(FileInfo fileInfo, Workspace? workspace)
     {
