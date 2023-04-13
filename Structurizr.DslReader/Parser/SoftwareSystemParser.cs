@@ -1,6 +1,8 @@
-﻿namespace Structurizr.DslReader.Parser
+﻿using Microsoft.Extensions.Logging;
+
+namespace Structurizr.DslReader.Parser
 {
-    public sealed class SoftwareSystemParser : IParser
+  public sealed class SoftwareSystemParser : IParser
   {
     private const string SOFTWARE_SYSTEM = "SoftwareSystem";
 
@@ -9,9 +11,9 @@
       return line.Split(" ").FirstOrDefault(s => string.Compare(s, SOFTWARE_SYSTEM, true) == 0) != null;
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
-      var tokens = line.Split(" ");
+      var tokens = Tokenizer.Tokenize(line);
 
       SoftwareSystem softwareSystem;
       if (string.Compare(tokens.GetValueAtOrDefault(0), SOFTWARE_SYSTEM, true) == 0) // softwareSystem = {name} {description}
@@ -22,14 +24,13 @@
       {
         if (tokens.GetValueAtOrDefault(1) == "=") //{id} = SoftwareSystem {name}
         {
-          softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(0), Location.Unspecified, tokens.GetValueAtOrDefault(3), tokens.GetValueAtOrDefault(4));
+          softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(0), Location.Unspecified, tokens.GetValueAtOrDefault(3), tokens.GetValueAtOrDefault(4));          
         }
         else
           throw new Exception($"Unable to parse {SOFTWARE_SYSTEM}");
       }
 
-      if (tokens.Last() == "{")
-        contextualWorkspace.Context.Set(softwareSystem);
+      contextualWorkspace.Context.Set(softwareSystem);
 
       return ValueTask.FromResult(contextualWorkspace);
     }

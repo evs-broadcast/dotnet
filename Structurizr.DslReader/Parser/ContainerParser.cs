@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Structurizr.DslReader.Parser
 {
@@ -10,9 +10,9 @@ namespace Structurizr.DslReader.Parser
       return line.Contains($"{CONTAINER} ", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
-      var tokens = line.Split(' ');
+      var tokens = Tokenizer.Tokenize(line);
       if (contextualWorkspace.Context.SoftwareSystem == null)
         throw new Exception($"SoftwareSystem not set for line [{line}]");
 

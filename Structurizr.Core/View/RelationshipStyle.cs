@@ -65,8 +65,15 @@ namespace Structurizr
         /// </summary>
         /// <value>A flag to indicate whether the line is rendered as dashed or not.</value>
         [DataMember(Name="dashed", EmitDefaultValue=false)]
-        public bool? Dashed { get; set; } 
-       
+        public bool? Dashed { get; set; }
+
+        /// <summary>
+        /// A flag to indicate whether the line is rendered as dotted or not.
+        /// </summary>
+        /// <value>A flag to indicate whether the line is rendered as dashed or not.</value>
+        [DataMember(Name = "style ", EmitDefaultValue = false)]
+        public string Style { get; set; }
+
         /// <summary>
         /// The routing of the line.
         /// </summary>

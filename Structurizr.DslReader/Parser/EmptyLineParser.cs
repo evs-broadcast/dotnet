@@ -1,4 +1,6 @@
-﻿namespace Structurizr.DslReader.Parser
+﻿using Microsoft.Extensions.Logging;
+
+namespace Structurizr.DslReader.Parser
 {
   public sealed class EmptyLineParser : IParser
   {
@@ -7,6 +9,6 @@
       return string.IsNullOrWhiteSpace(line);
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace workspace, DirectoryInfo directoryInfo) =>  ValueTask.FromResult(workspace);
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace workspace, DirectoryInfo directoryInfo, ILogger logger) =>  ValueTask.FromResult(workspace);
   }
 }

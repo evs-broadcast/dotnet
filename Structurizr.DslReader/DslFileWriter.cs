@@ -1,4 +1,8 @@
-﻿namespace Structurizr.DslReader
+﻿using System.Drawing;
+using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
+
+namespace Structurizr.DslReader
 {
   public sealed class DslFileWriter
   {
@@ -12,6 +16,16 @@
 
       using var writer = workspaceGeneratedFileInfo.CreateText();
 
+      WriteModel(workspace, writer);
+      WriteViews(workspace, writer);
+      writer.Close();
+
+      return workspaceGeneratedFileInfo;
+
+    }
+
+    private static void WriteModel(Workspace workspace, StreamWriter writer)
+    {
       writer.WriteLine($"workspace {workspace.Name} {{");
       writer.WriteLine("model {");
       //writer.WriteLine("!identifiers hierarchical");
@@ -60,15 +74,44 @@
       }
 
       writer.WriteLine("}");
+    }
+
+    private static void WriteViews(Workspace workspace, StreamWriter writer)
+    {
       writer.WriteLine("views {");
+      WriteStyles(workspace, writer);
+      writer.WriteLine("}");
+    }
+
+    private static void WriteStyles(Workspace workspace, StreamWriter writer)
+    {
+      writer.WriteLine(" styles {");
+
+      foreach(var element in workspace.Views.Configuration.Styles.Elements)
+      {
+        writer.WriteLine($"element {Quote(element.Tag)} {{");
+        WriteIf(writer, "background", element.Background);
+        WriteIf(writer, "color", element.Color);
+        WriteIf(writer, "shape", element.Shape.ToString());
+        writer.WriteLine("}");
+      }
+
+      foreach(var relationship in workspace.Views.Configuration.Styles.Relationships)
+      {
+        writer.WriteLine($"relationship {Quote(relationship.Tag)} {{");
+        WriteIf(writer, "style", relationship.Style);
+        WriteIf(writer, "color", relationship.Color);
+        writer.WriteLine("}");
+      }
+
+      WriteThemes(workspace, writer);
+      writer.WriteLine("}");
+    }
+
+    private static void WriteThemes(Workspace workspace, StreamWriter writer)
+    {
       writer.WriteLine("theme default");
-      writer.WriteLine("}");
-
-      writer.WriteLine("}");
-      writer.Close();
-
-      return workspaceGeneratedFileInfo;
-
+      writer.WriteLine("theme https://static.structurizr.com/themes/kubernetes-v0.3/theme.json");
     }
 
     private static void WriteRelationship(StreamWriter writer, ISet<Relationship> relationships)
@@ -94,25 +137,28 @@
 
     private static void WriteTagsIf(StreamWriter writer, string? tags)
     {
-      if (!string.IsNullOrWhiteSpace(tags))
-        writer.WriteLine($"tags \"{tags}\"");
+      WriteIf(writer,"tags",tags);
     }
 
     private static void WriteDescriptionIf(StreamWriter writer, string? description)
     {
-      if (!string.IsNullOrWhiteSpace(description))
-        writer.WriteLine($"description \"{description}\"");
+      WriteIf(writer, "description", description);
     }
 
     private static void WriteTechnologyIf(StreamWriter writer, string? technology)
     {
-      if (!string.IsNullOrWhiteSpace(technology))
-        writer.WriteLine($"technology \"{technology}\"");
+      WriteIf(writer, "technology", technology);
+    }
+
+    private static void WriteIf(StreamWriter writer,string key, string? value)
+    {
+      if (!string.IsNullOrWhiteSpace(value))
+        writer.WriteLine($"{key} {Quote(value)}");
     }
 
     private static string Quote(string content)
     {
-      return content == null ? "\"\"" : $"\"{content}\"";
+      return content == null ? "\"\"" : $"\"{content.Trim('"')}\"";
     }
   }
 }

@@ -1,15 +1,18 @@
-﻿namespace Structurizr.DslReader.Parser
+﻿using Microsoft.Extensions.Logging;
+
+namespace Structurizr.DslReader.Parser
 {
   public sealed class WorkspaceParser : IParser
   {
     private const string WORKSPACE = "workspace";
+    private static /*crap*/ readonly List<string> ExtendParsed = new List<string>();
 
     public bool Accept(string line, ParsingContext context)
     {
       return line.StartsWith(WORKSPACE, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public async ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
+    public async ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
       ArgumentNullException.ThrowIfNull(contextualWorkspace, nameof(contextualWorkspace));
 
@@ -20,7 +23,11 @@
         var fileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, tokens[2]));
         if (fileInfo.Exists)
         {
-          contextualWorkspace = new ContextualWorkspace(await DslFileReader.ParseAsync(fileInfo,contextualWorkspace.Workspace));
+          if (!ExtendParsed.Contains(fileInfo.FullName))
+          {
+            contextualWorkspace = new ContextualWorkspace(await DslFileReader.ParseAsync(fileInfo, contextualWorkspace.Workspace, logger));
+            ExtendParsed.Add(fileInfo.FullName);
+          }
         }
       }
       else

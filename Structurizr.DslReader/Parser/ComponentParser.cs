@@ -1,4 +1,6 @@
-﻿namespace Structurizr.DslReader.Parser
+﻿using Microsoft.Extensions.Logging;
+
+namespace Structurizr.DslReader.Parser
 {
   public sealed class ComponentParser : IParser
   {
@@ -8,7 +10,7 @@
       return line.Contains($"{COMPONENT} ", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
       var tokens = line.Split(' ');
       if (contextualWorkspace.Context.Container == null)

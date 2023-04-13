@@ -9,6 +9,8 @@
     public Container? Container { get; private set; }
     public Component? Component { get; private set; }
     public Element? Element { get; private set; }
+    public ElementStyle? ElementStyle { get; private set; }
+    public RelationshipStyle? RelationshipStyle { get; private set; }
 
     public void Set(Workspace workspace)
     {
@@ -24,6 +26,8 @@
 
     public void Set(SoftwareSystem softwareSystem)
     {
+      ArgumentNullException.ThrowIfNull(softwareSystem, nameof(softwareSystem));
+      
       ResetAll();
       SoftwareSystem = softwareSystem;
       Element = softwareSystem;
@@ -49,6 +53,18 @@
       Element = component;
     }
 
+    internal void Set(ElementStyle elementStyle)
+    {
+      ResetAll();
+      ElementStyle = elementStyle;
+    }
+
+    internal void Set(RelationshipStyle relationshipStyle)
+    {
+      ResetAll();
+      RelationshipStyle = relationshipStyle;
+    }
+
     private void ResetAll()
     {
       Workspace = null;
@@ -58,6 +74,8 @@
       Container = null;
       Component = null;
       Element = null;
+      ElementStyle = null;
+      RelationshipStyle = null;
     }
   }
 }

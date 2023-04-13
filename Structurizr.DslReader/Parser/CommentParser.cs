@@ -1,4 +1,6 @@
-﻿namespace Structurizr.DslReader.Parser
+﻿using Microsoft.Extensions.Logging;
+
+namespace Structurizr.DslReader.Parser
 {
   public sealed class CommentParser : IParser
   {
@@ -7,7 +9,7 @@
       return line.StartsWith("#");
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo)
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
       return ValueTask.FromResult(contextualWorkspace);
     }

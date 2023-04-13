@@ -1,10 +1,11 @@
-﻿using Structurizr.DslReader.Parser;
+﻿using Microsoft.Extensions.Logging;
+using Structurizr.DslReader.Parser;
 
 namespace Structurizr.DslReader
 {
   public sealed class DslFileReader
   {
-    public static async Task<Workspace> ParseAsync(FileInfo fileInfo, Workspace? workspace)
+    public static async Task<Workspace> ParseAsync(FileInfo fileInfo, Workspace? workspace, ILogger logger)
     {
       ArgumentNullException.ThrowIfNull(fileInfo, nameof(fileInfo));
       ArgumentNullException.ThrowIfNull(fileInfo.Directory, nameof(fileInfo.Directory));
@@ -16,23 +17,29 @@ namespace Structurizr.DslReader
       if (streamReader is not null)
       {
         var line = Sanitize(await streamReader.ReadLineAsync());
+        var lineNumber = 1;
         while (line != null)
         {
           if (!string.IsNullOrEmpty(line))
           {
             try
             {
-              Console.WriteLine(line);
-              var parser = parsers.FirstOrDefault(p => p.Accept(line, contextualWorkspace.Context)) ?? throw new Exception($"Unable to find Parser for [{line}]");
-              contextualWorkspace = await parser.ParseAsync(line, contextualWorkspace, fileInfo.Directory);
+              logger.LogDebug(line);
+              var parser = parsers.FirstOrDefault(p => p.Accept(line, contextualWorkspace.Context));
+              if (parser != null)
+                contextualWorkspace = await parser.ParseAsync(line, contextualWorkspace, fileInfo.Directory, logger);
+              else
+                logger.LogInformation($"Unable to find parser for line:{line}");
             }
             catch (Exception ex)
             {
-              Console.WriteLine($"[ERROR]unable to parse [{line}]");
-              Console.WriteLine($"[ERROR]{ex.Message}");
+              logger.LogError($"[ERROR]unable to parse [{lineNumber} -> {line} in file:{fileInfo.Name}]");
+              logger.LogError($"[ERROR]{ex.Message}");
+              throw;
             }
           }
           line = Sanitize(await streamReader.ReadLineAsync());
+          lineNumber++;
         }
 
         return contextualWorkspace.Workspace;

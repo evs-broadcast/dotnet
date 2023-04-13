@@ -4,7 +4,17 @@
   {
     public static string? GetValueAtOrDefault(this string[] array, int ndx)
     {
-      return array.Length > ndx ? array[ndx].Trim('"') : null;
+      if (array.Length <= ndx)
+      {
+        return null;
+      }
+      else
+      {
+        var value = array[ndx];
+        if (value == "{")
+          return null;
+        return value;
+      }
     }
 
     public static string[] GetTagsAt(this string[] array, int startNdx)
