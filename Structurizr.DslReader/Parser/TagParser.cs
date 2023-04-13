@@ -18,7 +18,7 @@ namespace Structurizr.DslReader.Parser
       var tokens = Tokenizer.Tokenize(line);
       for(var i=1;i<tokens.Length; i++)
       {
-        contextualWorkspace.Context.Element.AddTags(tokens[i]);
+        contextualWorkspace.Context.Element.AddTags(tokens[i].Trim('"'));
       }
 
       return ValueTask.FromResult(contextualWorkspace);
