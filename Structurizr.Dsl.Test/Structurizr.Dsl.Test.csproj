@@ -16,8 +16,8 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Structurizr.DslReader\Structurizr.DslReader.csproj" />
+  <ItemGroup>    
+    <ProjectReference Include="..\Structurizr.Dsl\Structurizr.Dsl.csproj" />
   </ItemGroup>
 
 </Project>
