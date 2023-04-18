@@ -33,7 +33,7 @@ namespace structurizr.Cli
         _logger.LogInformation($"Searching workspace.dsl files at {directoryInfo.FullName}");
         foreach (var fileInfo in directoryInfo.GetFiles("workspace.dsl", SearchOption.AllDirectories))
         {
-          _logger.LogInformation($"Merging workspace from file {fileInfo.Name}");
+          _logger.LogInformation($"Merging workspace from file {fileInfo.FullName}");
           workspace = await DslFileReader.ParseAsync(fileInfo, workspace, _logger);
         }
 
