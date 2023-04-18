@@ -1,15 +1,19 @@
-﻿using Microsoft.Extensions.Hosting;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 public class HostHolder
 {
-  private IHost? _host;
+  private CancellationTokenSource _cancellationTokenSource;
 
-  public void RegisterHost(IHost host) => _host = host;
-  public async Task Stop()
+  public HostHolder()
   {
-    if(_host != null )
-      await _host.StopAsync();
+    _cancellationTokenSource = new CancellationTokenSource();
+  }
+
+  public CancellationToken CancellationToken => _cancellationTokenSource.Token;
+
+  public void Stop()
+  {
+    _cancellationTokenSource.Cancel();
   }
 
   public void Exit()
