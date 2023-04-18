@@ -11,15 +11,14 @@ builder.ConfigureAppConfiguration(options =>
   options
   .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
   .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
+  .AddEnvironmentVariables()
 );
 
 var hostHolder = new HostHolder();
 
 builder.ConfigureServices((hostContext, services) =>
    {
-     var structurizrSettings = hostContext.Configuration.GetSection("Structurizr").Get<StructurizrSettings>() ?? new StructurizrSettings();
-     structurizrSettings.ApiKey = hostContext.Configuration["Structurizr__ApiKey"];
-     structurizrSettings.ApiSecret = hostContext.Configuration["Structurizr__ApiSecret"];
+     var structurizrSettings = hostContext.Configuration.GetSection("Structurizr").Get<StructurizrSettings>() ?? new StructurizrSettings();     
 
      var cliSettings = hostContext.Configuration.GetSection("Cli").Get<CliSettings>()??new CliSettings();
 
