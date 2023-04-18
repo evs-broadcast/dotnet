@@ -29,7 +29,8 @@ namespace structurizr.Cli
 
         Workspace? workspace = null;
         var directoryInfo = new DirectoryInfo(_cliSettings.BasePath);
-
+        
+        _logger.LogInformation($"Searching workspace.dsl files at {directoryInfo.FullName}");
         foreach (var fileInfo in directoryInfo.GetFiles("workspace.dsl", SearchOption.AllDirectories))
         {
           _logger.LogInformation($"Merging workspace from file {fileInfo.Name}");
