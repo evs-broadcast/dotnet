@@ -93,6 +93,11 @@ namespace Structurizr
             return Model.AddContainer(this, name, description, technology);
         }
 
+        public Container AddContainer(string id, string name, string description, string technology)
+        {
+            return Model.AddContainer(this, id, name, description, technology);
+        }
+
         internal void Add(Container container)
         {
             _containers.Add(container);
