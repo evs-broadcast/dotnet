@@ -37,6 +37,7 @@ namespace structurizr.Cli
           workspace = await DslFileReader.ParseAsync(fileInfo, workspace, _logger);
         }
 
+        
         if (workspace == null) throw new Exception("Unable to generate workspace");
 
         _logger.LogInformation($"Parsing succesfull software sytem:{workspace.Model.SoftwareSystems.Count}");
@@ -48,7 +49,7 @@ namespace structurizr.Cli
         if (_cliSettings.PushToStructurizr)
           Process.Start("cmd.exe", $"/c structurizr.bat push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret} -workspace {generatedWorkspaceFileinfo.FullName}");
 
-        await _hostHolder.Stop();
+        _hostHolder.Stop();        
       }
       catch (Exception e)
       {

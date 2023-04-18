@@ -30,6 +30,4 @@ builder.ConfigureServices((hostContext, services) =>
      .AddSingleton(hostHolder);
    });
 
-var host = builder.Build();
-hostHolder.RegisterHost(host);
-await host.StartAsync();
+await builder.RunConsoleAsync(hostHolder.CancellationToken);
