@@ -241,3 +241,4 @@ _Pvt_Extensions
 
 # Structurizr JSON files
 Structurizr.Examples/*.json
+Structurizr.Cli/Properties/launchSettings.json
