@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Structurizr.DslReader
 {
@@ -21,7 +19,6 @@ namespace Structurizr.DslReader
       writer.Close();
 
       return workspaceGeneratedFileInfo;
-
     }
 
     private static void WriteModel(Workspace workspace, StreamWriter writer)
