@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using Structurizr.DslReader;
 using structurizr_cli.Configuration;
+using System.Net.Sockets;
+using Ductus.FluentDocker.Services;
+using Ductus.FluentDocker.Commands;
 
 namespace structurizr.Cli
 {
@@ -50,6 +53,7 @@ namespace structurizr.Cli
         var generatedWorkspaceFileinfo = DslFileWriter.Write(workspace, directoryInfo);
 
         if (_cliSettings.PushToStructurizr)
+          //PushToStructurizr(generatedWorkspaceFileinfo.FullName);
           Process.Start("cmd.exe", $"/c structurizr.bat push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret} -workspace {generatedWorkspaceFileinfo.FullName}");
 
         _hostHolder.Stop();
@@ -58,6 +62,40 @@ namespace structurizr.Cli
       {
         _logger.LogError(e.Message, e);
         _hostHolder.Exit();
+      }
+    }
+
+    private void PushToStructurizr(string workspaceFullPath)
+    {
+      var hosts = new Hosts().Discover();
+      var _docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
+      if (_docker == null)
+        throw new Exception("No docker host running unable to push to structurizr");
+
+      //var command = $"structurizr/cli push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret} -workspace {workspaceFullPath}";
+      var command = $"structurizr/cli push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret}";
+      _logger.LogInformation(command);
+      var commandResponse = _docker.Host.Run(command,
+        new Ductus.FluentDocker.Model.Containers.ContainerCreateParams
+        {
+          Interactive = true,
+          //AutoRemoveContainer = true,
+          Environment = new[] { $"PATH={workspaceFullPath}" }
+        });
+      if (!commandResponse.Success)
+        throw new Exception(commandResponse.ToString());
+
+      using var logs = _docker.Host.Logs(commandResponse.Data);
+
+      while (!logs.IsFinished)
+      {
+        var line = logs.TryRead(5000); // Do a read with timeout
+        if (line == null)
+        {
+          break;
+        }
+
+        _logger.LogInformation(line);
       }
     }
   }

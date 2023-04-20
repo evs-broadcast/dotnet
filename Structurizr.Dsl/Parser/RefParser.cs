@@ -16,7 +16,8 @@ namespace Structurizr.DslReader.Parser
 
       if(contextualWorkspace.Context.Model != null)
       {
-        var softwaresystem = contextualWorkspace.Context.Model.GetSoftwareSystemWithId(tokens.GetValueAtOrDefault(1));
+        string? softwareSystemId = tokens.GetValueAtOrDefault(1);
+        var softwaresystem = contextualWorkspace.Context.Model.GetSoftwareSystemWithId(softwareSystemId);
         if (softwaresystem == null)
           throw new Exception($"Unknow Software system [{tokens.GetValueAtOrDefault(1)}]");
         contextualWorkspace.Context.Set(softwaresystem);

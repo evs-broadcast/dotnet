@@ -2,6 +2,15 @@
 
 namespace Structurizr.DslReader.Parser
 {
+  public static class ContainerValidator
+  {
+    private static readonly string[] _prefix = { "bk_", "ui_","wf_" };
+    public static void Validate(Container container)
+    {
+       if(!_prefix.Any(p=>container.Id.StartsWith(p)))
+        throw new Exception($"Container prefix MUST be {string.Join(" or ", _prefix)} ({container.Id})");
+    }
+  }
   public sealed class ContainerParser : IParser
   {
     private const string CONTAINER = "container";
@@ -26,6 +35,7 @@ namespace Structurizr.DslReader.Parser
 
         if (tokens.Last() == "{")
           contextualWorkspace.Context.Set(container);
+        ContainerValidator.Validate(container);
       }
       else
       {

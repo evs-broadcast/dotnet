@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using Structurizr.Dsl.Parser.Validator;
 
 namespace Structurizr.DslReader.Parser
 {
-  public sealed class SoftwareSystemParser : IParser
+    public sealed class SoftwareSystemParser : IParser
   {
     private const string SOFTWARE_SYSTEM = "SoftwareSystem";
 
@@ -30,6 +31,7 @@ namespace Structurizr.DslReader.Parser
           throw new Exception($"Unable to parse {SOFTWARE_SYSTEM}");
       }
 
+      SoftwareSystemValidator.Validate(softwareSystem);
       contextualWorkspace.Context.Set(softwareSystem);
 
       return ValueTask.FromResult(contextualWorkspace);
