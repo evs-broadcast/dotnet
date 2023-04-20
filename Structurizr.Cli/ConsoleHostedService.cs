@@ -51,7 +51,7 @@ namespace structurizr.Cli
         _logger.LogInformation("retrieving ipd-via bundle from bitbucket");
 
         var generatedWorkspaceFileinfo = DslFileWriter.Write(workspace, directoryInfo);
-        _logger.LogInformation($"Merged workspace write in {generatedWorkspaceFileinfo.FullName}");
+        _logger.LogInformation($"Merged workspace in {generatedWorkspaceFileinfo.FullName}");
 
         if (_cliSettings.PushToStructurizr)
           //PushToStructurizr(generatedWorkspaceFileinfo.FullName);
