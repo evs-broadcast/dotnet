@@ -12,7 +12,7 @@ namespace Structurizr.DslReader.Parser
 
     public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
-      var tokens = line.Split(' ');
+      var tokens = Tokenizer.Tokenize(line);
       if (contextualWorkspace.Context.Container == null)
         throw new Exception($"Container not set for line [{line}]");
 
