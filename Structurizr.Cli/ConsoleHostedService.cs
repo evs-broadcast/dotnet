@@ -61,7 +61,7 @@ namespace structurizr.Cli
       }
       catch (Exception e)
       {
-        _logger.LogError(e.Message, e);
+        _logger.LogError(e, e.Message);
         _hostHolder.Exit();
       }
     }
