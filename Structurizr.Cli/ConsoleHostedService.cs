@@ -7,6 +7,9 @@ using structurizr_cli.Configuration;
 using System.Net.Sockets;
 using Ductus.FluentDocker.Services;
 using Ductus.FluentDocker.Commands;
+using Structurizr.Config;
+using Structurizr.Util;
+using System.Text;
 
 namespace structurizr.Cli
 {
@@ -44,7 +47,7 @@ namespace structurizr.Cli
           workspace = await DslFileReader.ParseAsync(fileInfo, workspace, _logger);
         }
 
-        if (workspace == null) throw new Exception("Unable to generate workspace");
+        if (workspace == null) throw new Exception("Unable to generate workspace");        
 
         _logger.LogInformation($"Parsing succesfull software sytem:{workspace.Model.SoftwareSystems.Count}");
 
@@ -54,8 +57,7 @@ namespace structurizr.Cli
         _logger.LogInformation($"Merged workspace in {generatedWorkspaceFileinfo.FullName}");
 
         if (_cliSettings.PushToStructurizr)
-          //PushToStructurizr(generatedWorkspaceFileinfo.FullName);
-          Process.Start("cmd.exe", $"/c structurizr.bat push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret} -workspace {generatedWorkspaceFileinfo.FullName}");
+          PushToStructurizr(generatedWorkspaceFileinfo);
 
         _hostHolder.Stop();
       }
@@ -66,37 +68,27 @@ namespace structurizr.Cli
       }
     }
 
-    private void PushToStructurizr(string workspaceFullPath)
+    private void PushToStructurizr(FileInfo generatedWorkspace)
     {
-      var hosts = new Hosts().Discover();
-      var _docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
-      if (_docker == null)
-        throw new Exception("No docker host running unable to push to structurizr");
+      //Powershell: docker run --rm -v ${PWD}/structurizr-gen:/usr/local/structurizr structurizr/cli push -url xxx-id xxx -key xxx -secret xxx -w ./workspace.dsl
 
-      //var command = $"structurizr/cli push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret} -workspace {workspaceFullPath}";
-      var command = $"structurizr/cli push -url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret}";
+      var command = $"docker run --rm - v {generatedWorkspace.DirectoryName}/:/usr/local/structurizr structurizr/cli push - url {_structurizrSettings.ApiUrl} -id {_structurizrSettings.WorkspaceId} -key {_structurizrSettings.ApiKey} -secret {_structurizrSettings.ApiSecret} -w ./workspace.dsl";
       _logger.LogInformation(command);
-      var commandResponse = _docker.Host.Run(command,
-        new Ductus.FluentDocker.Model.Containers.ContainerCreateParams
-        {
-          Interactive = true,
-          //AutoRemoveContainer = true,
-          Environment = new[] { $"PATH={workspaceFullPath}" }
-        });
-      if (!commandResponse.Success)
-        throw new Exception(commandResponse.ToString());
+      var process = Process.Start("cmd.exe", $"/c {command}");
 
-      using var logs = _docker.Host.Logs(commandResponse.Data);
+      process.WaitForExit();
 
-      while (!logs.IsFinished)
+      if(process.ExitCode != 0)
       {
-        var line = logs.TryRead(5000); // Do a read with timeout
-        if (line == null)
+        var sb = new StringBuilder();
+        string? error;
+        do
         {
-          break;
-        }
+          error = process.StandardError.ReadLine();
+          sb.Append(error);
+        } while (error != null);
 
-        _logger.LogInformation(line);
+        throw new Exception(sb.ToString());
       }
     }
   }

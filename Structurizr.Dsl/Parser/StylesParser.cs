@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Structurizr.DslReader.Parser
 {
@@ -10,7 +10,7 @@ namespace Structurizr.DslReader.Parser
       return line.StartsWith($"{STYLES} ", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, int lineNumber, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
       return ValueTask.FromResult(contextualWorkspace);
     }

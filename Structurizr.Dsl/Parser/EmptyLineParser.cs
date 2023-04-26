@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Structurizr.DslReader.Parser
 {
@@ -9,6 +9,6 @@ namespace Structurizr.DslReader.Parser
       return string.IsNullOrWhiteSpace(line);
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace workspace, DirectoryInfo directoryInfo, ILogger logger) =>  ValueTask.FromResult(workspace);
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, int lineNumber, ContextualWorkspace workspace, DirectoryInfo directoryInfo, ILogger logger) =>  ValueTask.FromResult(workspace);
   }
 }

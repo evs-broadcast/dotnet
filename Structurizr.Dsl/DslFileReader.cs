@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
+using Structurizr.Dsl.Exceptions;
 using Structurizr.DslReader.Parser;
 
 namespace Structurizr.DslReader
@@ -27,7 +28,7 @@ namespace Structurizr.DslReader
               logger.LogDebug(line);
               var parser = parsers.FirstOrDefault(p => p.Accept(line, contextualWorkspace.Context));
               if (parser != null)
-                contextualWorkspace = await parser.ParseAsync(line, contextualWorkspace, fileInfo.Directory, logger);
+                contextualWorkspace = await parser.ParseAsync(line, lineNumber, contextualWorkspace, fileInfo.Directory, logger);
               else
                 logger.LogInformation($"Unable to find parser for line:{line}");
             }
@@ -41,6 +42,9 @@ namespace Structurizr.DslReader
           line = Sanitize(await streamReader.ReadLineAsync());
           lineNumber++;
         }
+
+        if (contextualWorkspace.NamingConventionsError.Errors.Any())
+          throw new NamingConventionErrorsException(contextualWorkspace.NamingConventionsError);
 
         return contextualWorkspace.Workspace;
       }

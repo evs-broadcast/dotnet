@@ -1,40 +1,47 @@
-﻿using Microsoft.Extensions.Logging;
-using Structurizr.Dsl.Parser.Validator;
+using Microsoft.Extensions.Logging;
+using Structurizr.Dsl.Exceptions;
 
-namespace Structurizr.DslReader.Parser
+namespace Structurizr.DslReader.Parser;
+
+  public sealed class SoftwareSystemParser : IParser
 {
-    public sealed class SoftwareSystemParser : IParser
+  private const string SOFTWARE_SYSTEM = "SoftwareSystem";
+  private const string PREFIX = "ss_";
+
+  public bool Accept(string line, ParsingContext context)
   {
-    private const string SOFTWARE_SYSTEM = "SoftwareSystem";
+    return line.Split(" ").FirstOrDefault(s => string.Compare(s, SOFTWARE_SYSTEM, true) == 0) != null;
+  }
 
-    public bool Accept(string line, ParsingContext context)
+  public ValueTask<ContextualWorkspace> ParseAsync(string line,int lineNumber, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
+  {
+    var tokens = Tokenizer.Tokenize(line);
+
+    SoftwareSystem softwareSystem;
+    if (string.Compare(tokens.GetValueAtOrDefault(0), SOFTWARE_SYSTEM, true) == 0) // softwareSystem = {name} {description}
     {
-      return line.Split(" ").FirstOrDefault(s => string.Compare(s, SOFTWARE_SYSTEM, true) == 0) != null;
+      softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(2), tokens.GetValueAtOrDefault(3));
     }
-
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
+    else
     {
-      var tokens = Tokenizer.Tokenize(line);
-
-      SoftwareSystem softwareSystem;
-      if (string.Compare(tokens.GetValueAtOrDefault(0), SOFTWARE_SYSTEM, true) == 0) // softwareSystem = {name} {description}
+      if (tokens.GetValueAtOrDefault(1) == "=") //{id} = SoftwareSystem {name}
       {
-        softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(2), tokens.GetValueAtOrDefault(3));
+        softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(0), Location.Unspecified, tokens.GetValueAtOrDefault(3), tokens.GetValueAtOrDefault(4));
       }
       else
-      {
-        if (tokens.GetValueAtOrDefault(1) == "=") //{id} = SoftwareSystem {name}
-        {
-          softwareSystem = contextualWorkspace.Workspace.Model.AddSoftwareSystem(tokens.GetValueAtOrDefault(0), Location.Unspecified, tokens.GetValueAtOrDefault(3), tokens.GetValueAtOrDefault(4));          
-        }
-        else
-          throw new Exception($"Unable to parse {SOFTWARE_SYSTEM}");
-      }
-
-      SoftwareSystemValidator.Validate(softwareSystem);
-      contextualWorkspace.Context.Set(softwareSystem);
-
-      return ValueTask.FromResult(contextualWorkspace);
+        throw new ParsingException(directoryInfo.Name, lineNumber, $"Unable to parse {SOFTWARE_SYSTEM}");
     }
+
+    AssetNamingConvention(contextualWorkspace, directoryInfo, softwareSystem, lineNumber);
+
+    contextualWorkspace.Context.Set(softwareSystem);
+
+    return ValueTask.FromResult(contextualWorkspace);
+  }
+
+  private static void AssetNamingConvention(ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, SoftwareSystem softwareSystem, int lineNumber)
+  {
+    if (!softwareSystem.Id.StartsWith(PREFIX))
+      contextualWorkspace.NamingConventionsError.AddError(directoryInfo.Name, lineNumber, $"SoftwareSystem prefix MUST be {PREFIX} ({softwareSystem.Id})");
   }
 }

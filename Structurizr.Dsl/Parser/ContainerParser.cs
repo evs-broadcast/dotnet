@@ -1,16 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Structurizr.DslReader.Parser
 {
-  public static class ContainerValidator
-  {
-    private static readonly string[] _prefix = { "bk_", "ui_","wf_" };
-    public static void Validate(Container container)
-    {
-       if(!_prefix.Any(p=>container.Id.StartsWith(p)))
-        throw new Exception($"Container prefix MUST be {string.Join(" or ", _prefix)} ({container.Id})");
-    }
-  }
   public sealed class ContainerParser : IParser
   {
     private const string CONTAINER = "container";
@@ -19,7 +10,7 @@ namespace Structurizr.DslReader.Parser
       return line.Contains($"{CONTAINER} ", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public ValueTask<ContextualWorkspace> ParseAsync(string line, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
+    public ValueTask<ContextualWorkspace> ParseAsync(string line, int lineNumber, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
       var tokens = Tokenizer.Tokenize(line);
       if (contextualWorkspace.Context.SoftwareSystem == null)
@@ -35,7 +26,7 @@ namespace Structurizr.DslReader.Parser
 
         if (tokens.Last() == "{")
           contextualWorkspace.Context.Set(container);
-        ContainerValidator.Validate(container);
+        ContainerValidator.Validate(container, contextualWorkspace,lineNumber,directoryInfo);
       }
       else
       {
