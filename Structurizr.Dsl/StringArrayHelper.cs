@@ -1,4 +1,4 @@
-﻿namespace Structurizr.DslReader
+namespace Structurizr.DslReader
 {
   public static class StringArrayHelper
   {
@@ -13,7 +13,7 @@
         var value = array[ndx];
         if (value == "{")
           return null;
-        return value;
+        return value.Trim('"');
       }
     }
 
