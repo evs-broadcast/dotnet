@@ -6,7 +6,7 @@ namespace Structurizr.DslReader.Parser
   public sealed class RelationshipParser : IParser
   {
     private const string RELATION = "->";
-    private static readonly string[] TECH = { "https", "WS", "command", "event", "grpc","wf","db" };
+    private static readonly string[] TECH = { "https", "WS", "command", "event", "querycommand", "queryevent", "grpc","wf","db" };
     public bool Accept(string line, ParsingContext context)
     {
       return line.Contains($"{RELATION} ", StringComparison.InvariantCultureIgnoreCase);
