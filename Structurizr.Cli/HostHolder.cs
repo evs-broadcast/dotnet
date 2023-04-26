@@ -18,6 +18,7 @@ public class HostHolder
 
   public void Exit()
   {
-    Environment.Exit(-1);
+    //Environment.Exit(-1);
+    throw new Exception("let's exit with -1 error code");
   }
 }
