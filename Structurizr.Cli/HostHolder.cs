@@ -18,6 +18,6 @@ public class HostHolder
 
   public void Exit()
   {
-    Process.GetCurrentProcess().Kill();
+    Environment.Exit(-1);
   }
 }
