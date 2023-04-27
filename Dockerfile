@@ -8,7 +8,7 @@ WORKDIR /src
 RUN ls > echo
 COPY Structurizr.Cli/Structurizr.Cli.csproj Structurizr.Cli/
 COPY Structurizr.Dsl/Structurizr.Dsl.csproj Structurizr.Dsl/
-COPY ["Structurizr.Core/Structurizr.Core.csproj", "Structurizr.Core/"]
+COPY Structurizr.Core/Structurizr.Core.csproj Structurizr.Core/
 RUN dotnet restore "Structurizr.Cli/Structurizr.Cli.csproj"
 
 COPY . .
