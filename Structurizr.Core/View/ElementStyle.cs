@@ -45,7 +45,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (Structurizr.Color.IsValidColor(value))
                 {
                     this._background = value.ToLower();
                 }
@@ -71,7 +71,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (Structurizr.Color.IsValidColor(value))
                 {
                     this._stroke = value.ToLower();
                 }
@@ -97,7 +97,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (Structurizr.Color.IsValidColor(value))
                 {
                     this._color = value.ToLower();
                 }

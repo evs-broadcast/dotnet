@@ -1,17 +1,48 @@
-﻿namespace Structurizr.DslReader.Parser
+using System.Text;
+
+namespace Structurizr.DslReader.Parser
 {
   public static class Tokenizer
   {
     public static string[] Tokenize(string line)
     {
-      var tokens = line.Split(' ').ToList();
-      var lastToken = tokens.Last();
-      if (lastToken.Length > 1 && lastToken[^1]=='{')
+      var tokens = new List<string>();
+
+      var insideQuotes = false;
+      var currentToken = new StringBuilder();
+
+      foreach (var c in line)
       {
-        tokens.Remove(lastToken);
-        tokens.Add(lastToken[..^1]);
-        tokens.Add("{");
+        if (c == '"')
+        {
+          insideQuotes = !insideQuotes;
+          currentToken.Append(c);
+        }
+        else if (c == ' ' && !insideQuotes)
+        {
+          if (currentToken.Length > 0)
+          {
+            tokens.Add(currentToken.ToString());
+            currentToken.Clear();
+          }
+        }
+        else if(c == '{')
+        {
+          tokens.Add(currentToken.ToString());
+          currentToken.Clear();
+          tokens.Add("{");
+        }
+        else
+        {
+          currentToken.Append(c);
+        }
       }
+
+      if (currentToken.Length > 0)
+      {
+        tokens.Add(currentToken.ToString());
+      }
+
       return tokens.ToArray();
     }
   }

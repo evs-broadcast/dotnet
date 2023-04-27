@@ -26,7 +26,7 @@ namespace Structurizr
             get { return this._background; }
             set
             {
-                if (Color.IsHexColorCode(value))
+                if (Color.IsValidColor(value))
                 {
                     this._background = value.ToLower();
                 }
@@ -43,7 +43,7 @@ namespace Structurizr
             get { return this._foreground; }
             set
             {
-                if (Color.IsHexColorCode(value))
+                if (Color.IsValidColor(value))
                 {
                     this._foreground = value.ToLower();
                 }

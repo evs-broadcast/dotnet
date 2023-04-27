@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xunit;
 
 namespace Structurizr.Core.Tests
@@ -44,18 +44,10 @@ namespace Structurizr.Core.Tests
         }
 
         [Fact]
-        public void Test_Background_ThrowsAnException_WhenAnInvalidHexColorCodeIsSpecified()
+        public void Test_Background_ThrowsAnException_WhenAnValidColorNameIsSpecified()
         {
-            try
-            {
-                ElementStyle style = new ElementStyle();
-                style.Background = "white";
-                throw new TestFailedException();
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.Equal("'white' is not a valid hex color code.", ae.Message);
-            }
+            ElementStyle style = new ElementStyle();
+            style.Background = "white";
         }
 
         [Fact]
@@ -70,22 +62,7 @@ namespace Structurizr.Core.Tests
 
             style.Color = "#123456";
             Assert.Equal("#123456", style.Color);
-        }
-
-        [Fact]
-        public void Test_Color_ThrowsAnException_WhenAnInvalidHexColorCodeIsSpecified()
-        {
-            try
-            {
-                ElementStyle style = new ElementStyle();
-                style.Color = "white";
-                throw new TestFailedException();
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.Equal("'white' is not a valid hex color code.", ae.Message);
-            }
-        }
+        }        
 
         [Fact]
         public void Test_SetIcon_WithAUrl()
@@ -149,21 +126,5 @@ namespace Structurizr.Core.Tests
             style.Stroke = "#123456";
             Assert.Equal("#123456", style.Stroke);
         }
-
-        [Fact]
-        public void Test_Stroke_ThrowsAnException_WhenAnInvalidHexColorCodeIsSpecified()
-        {
-            try
-            {
-                ElementStyle style = new ElementStyle();
-                style.Stroke = "white";
-                throw new TestFailedException();
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.Equal("'white' is not a valid hex color code.", ae.Message);
-            }
-        }
-
     }
 }

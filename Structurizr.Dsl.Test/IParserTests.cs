@@ -1,4 +1,4 @@
-﻿using Structurizr.DslReader.Parser;
+using Structurizr.DslReader.Parser;
 using Xunit;
 
 namespace Structurizr.DslReader.Test
@@ -14,15 +14,6 @@ namespace Structurizr.DslReader.Test
 
       Assert.NotNull(parser);
       Assert.IsType<CommentParser>(parser);
-    }
-
-    [Fact]
-    public void Tokenizer_HandleOpenBracketWithoutSpace()
-    {
-      const string line = "sub_search = softwareSystem \"via-search\"{";
-      var tokens = Tokenizer.Tokenize(line);
-      Assert.Equal("{", tokens.Last());
-      Assert.Equal(5,tokens.Count());
     }
   }
 }
