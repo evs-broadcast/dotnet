@@ -6,7 +6,7 @@ namespace Structurizr.DslReader.Parser
   public sealed class RelationshipParser : IParser
   {
     private const string RELATION = "->";
-    private static readonly string[] TECH = { "http","https", "WS", "command", "event", "querycommand", "queryevent", "grpc","wf","db", "ZMQ" };
+    private static readonly string[] TECH = { "http","https", "WS", "command", "event", "querycommand", "queryevent", "grpc","wf","db", "ZMQ", "inproc" };
     public bool Accept(string line, ParsingContext context)
     {
       return line.Contains($"{RELATION} ", StringComparison.InvariantCultureIgnoreCase);
@@ -14,7 +14,7 @@ namespace Structurizr.DslReader.Parser
 
     public ValueTask<ContextualWorkspace> ParseAsync(string line, int lineNumber, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
-      var tokens = line.Split(' ');
+      var tokens = Tokenizer.Tokenize(line);
 
       Relationship relationship;
 
@@ -43,9 +43,9 @@ namespace Structurizr.DslReader.Parser
       {
         throw new Exception($"unable to parse [{line}]");
       }
-
+      
       if (!TECH.Any(t => t == relationship.Technology))
-        contextualWorkspace.AddNamingConventionError(directoryInfo.Name, lineNumber, $"Relationship technology MUST be {string.Join(" or ", TECH)}");
+        contextualWorkspace.AddNamingConventionError(directoryInfo.Name, lineNumber, $"Wrong relationship technology [{relationship.Technology}] MUST be {string.Join(" or ", TECH)}");
 
       relationship.AddTags(relationship.Technology);
 
