@@ -12,11 +12,11 @@ namespace Structurizr.DslReader.Parser
 
     public ValueTask<ContextualWorkspace> ParseAsync(string line, int lineNumber, ContextualWorkspace contextualWorkspace, DirectoryInfo directoryInfo, ILogger logger)
     {
-      var tokens = line.Split(' ');
+      var tokens = Tokenizer.Tokenize(line);
 
       if(contextualWorkspace.Context.Model != null)
       {
-        string? softwareSystemId = tokens.GetValueAtOrDefault(1);
+        var softwareSystemId = tokens.GetValueAtOrDefault(1);
         var softwaresystem = contextualWorkspace.Context.Model.GetSoftwareSystemWithId(softwareSystemId);
         if (softwaresystem == null)
           throw new Exception($"Unknow Software system [{tokens.GetValueAtOrDefault(1)}]");
