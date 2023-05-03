@@ -19,6 +19,10 @@ namespace Structurizr.DslReader.Parser
       if (tokens.GetValueAtOrDefault(1) == "=") //{id} = Container {name} {description} {technology} {tags}
       {
         var container = contextualWorkspace.Context.SoftwareSystem.AddContainer(tokens.GetValueAtOrDefault(0), tokens.GetValueAtOrDefault(3), tokens.GetValueAtOrDefault(4), tokens.GetValueAtOrDefault(5));
+
+        if (container == null)
+          throw new Exception($"Dupplicate Container id {tokens.GetValueAtOrDefault(0)} at line {line} in file {directoryInfo.Name}/workspace.dsl");
+
         for (var i = 6; tokens.GetValueAtOrDefault(i) != null; i++)
         {
           container.AddTags(tokens.GetValueAtOrDefault(i)?.Split(','));

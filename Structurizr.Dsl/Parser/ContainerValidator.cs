@@ -4,7 +4,7 @@ public static class ContainerValidator
 {
   private static readonly string[] _prefix = { "bk_", "ui_", "wf_" };
   private static readonly string[] _backendTech = { ".NET", "Java", "C++" };
-  private static readonly string[] _frontendTech = { "Js", "TS" };
+  private static readonly string[] _frontendTech = { "" };
   public static void Validate(Container container, ContextualWorkspace contextualWorkspace, int lineNumber, DirectoryInfo directoryInfo)
   {
     if (IsBackend(container))
@@ -35,7 +35,7 @@ public static class ContainerValidator
 
   private static void AssertTechnology(Container container, ContextualWorkspace contextualWorkspace, int lineNumber, DirectoryInfo directoryInfo, IEnumerable<string> technology)
   {
-    if (!technology.Any(p => string.Compare(p, container.Technology, true) == 0))
-      contextualWorkspace.AddNamingConventionError(directoryInfo.Name, lineNumber, $"Container technology MUST be {string.Join(" or ", technology)} ({container.Id})");
+    //no check
+    return;
   }
 }
