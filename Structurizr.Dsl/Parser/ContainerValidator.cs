@@ -5,6 +5,8 @@ public static class ContainerValidator
   private static readonly string[] _prefix = { "bk_", "ui_", "wf_" };
   private static readonly string[] _backendTech = { ".NET", "Java", "C++" };
   private static readonly string[] _frontendTech = { "" };
+  private const string WorkflowTag = "workflow";
+
   public static void Validate(Container container, ContextualWorkspace contextualWorkspace, int lineNumber, DirectoryInfo directoryInfo)
   {
     if (IsBackend(container))
@@ -15,11 +17,11 @@ public static class ContainerValidator
     {
       AssertTechnology(container, contextualWorkspace, lineNumber, directoryInfo, _frontendTech);
     }
-    else if(IsWorkflow(container))
+    else if (IsWorkflow(container))
     {
-      var tag = container.GetAllTags().FirstOrDefault(t=>string.Compare(t,"workflow",true) == 0);
-      if(tag == null)
-        contextualWorkspace.AddNamingConventionError(directoryInfo.Name, lineNumber, $"Container prefix MUST be {string.Join(" or ", _prefix)} ({container.Id})");
+      var tag = container.GetAllTags().FirstOrDefault(t => string.Compare(t, WorkflowTag, true) == 0);
+      if (tag == null)
+        contextualWorkspace.AddNamingConventionError(directoryInfo.Name, lineNumber, $"Workflow container must have a tag '{WorkflowTag}' ({container.Id})");
     }
     else
     {
