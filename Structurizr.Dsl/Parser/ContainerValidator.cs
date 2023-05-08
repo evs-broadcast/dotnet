@@ -21,7 +21,7 @@ public static class ContainerValidator
     {
       var tag = container.GetAllTags().FirstOrDefault(t => string.Compare(t, WorkflowTag, true) == 0);
       if (tag == null)
-        contextualWorkspace.AddNamingConventionError(directoryInfo.Name, lineNumber, $"Workflow container must have a tag '{WorkflowTag}' ({container.Id})");
+        container.AddTags(WorkflowTag);
     }
     else
     {
