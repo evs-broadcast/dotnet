@@ -37,7 +37,7 @@ public static class ContainerValidator
 
   private static void AssertTechnology(Container container, ContextualWorkspace contextualWorkspace, int lineNumber, DirectoryInfo directoryInfo, IEnumerable<string> technology)
   {
-    //no check
-    return;
+    if(string.IsNullOrWhiteSpace(container.Technology))
+      throw new Exception($"Container {container.Name} should have one technology");
   }
 }
