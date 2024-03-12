@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Structurizr.DslReader
 {
@@ -14,8 +14,10 @@ namespace Structurizr.DslReader
 
       using var writer = workspaceGeneratedFileInfo.CreateText();
 
+      writer.WriteLine($"workspace {workspace.Name} {{");
       WriteModel(workspace, writer);
       WriteViews(workspace, writer);
+      writer.WriteLine("}");
       writer.Close();
 
       return workspaceGeneratedFileInfo;
@@ -23,7 +25,6 @@ namespace Structurizr.DslReader
 
     private static void WriteModel(Workspace workspace, StreamWriter writer)
     {
-      writer.WriteLine($"workspace {workspace.Name} {{");
       writer.WriteLine("model {");
       //writer.WriteLine("!identifiers hierarchical");
 
